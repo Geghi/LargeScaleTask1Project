@@ -2,12 +2,8 @@ package hibernateTask1;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,6 +25,7 @@ public class ProfessorComment extends Comment {
 	public ProfessorComment() {
 		super();
 	}
+
 	// CONSTRUCTOR
 	public ProfessorComment(int i, String t, Date d) {
 		super(i, t, d);

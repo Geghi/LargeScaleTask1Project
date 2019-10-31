@@ -36,7 +36,7 @@ public class Degree {
 	private List<Subject> subject = new ArrayList<Subject>();
 
 	public Degree() {
-		
+
 	}
 
 	public Degree(int i, String n) {
@@ -81,7 +81,3 @@ public class Degree {
 		return getName();
 	}
 }
-
-
-
-

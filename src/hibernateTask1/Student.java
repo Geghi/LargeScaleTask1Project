@@ -32,7 +32,7 @@ public class Student extends Person {
 	public Student() {
 		super();
 		admin = false;
-		username = "";		
+		username = "";
 	}
 
 	public Student(int i, String u, String p, boolean a) {
@@ -90,7 +90,5 @@ public class Student extends Person {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	
 
 }

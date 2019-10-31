@@ -31,6 +31,7 @@ public class Subject {
 	private int id;
 	private String name;
 	private int credits;
+	@Column(name = "info", columnDefinition="TEXT")
 	private String info;
 
 	// relation with degree
@@ -48,9 +49,9 @@ public class Subject {
 	private Set<Professor> professor = new HashSet<Professor>();
 
 	public Subject() {
-		
+
 	}
-	
+
 	// CONSTRUCTOR
 	public Subject(int i, String n, int c, String inf) {
 		id = i;

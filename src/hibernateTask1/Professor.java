@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -15,23 +17,25 @@ import javax.persistence.Table;
 
 @Entity(name = "Professors")
 @Table(name = "professors")
-public class Professor extends Person{
-	
+public class Professor extends Person {
+
+	@Column(name = "info", columnDefinition="TEXT")
 	private String info;
 	private String name;
 	private String surname;
 
-	//relation with profComments.
-	@OneToMany(mappedBy = "prof", cascade = CascadeType.ALL, orphanRemoval = true)
+	// relation with profComments.
+	@OneToMany(mappedBy = "prof", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<ProfessorComment> professorComments = new ArrayList<ProfessorComment>();
 
-	//relation with Subjects.
-	@ManyToMany(mappedBy = "professor")
+	// relation with Subjects.
+	@ManyToMany(mappedBy = "professor", cascade = CascadeType.ALL)
 	private Set<Subject> subject = new HashSet<Subject>();
 
 	public Professor() {
-		
+
 	}
+
 	// CONSTRUCTOR
 	public Professor(int i, String n, String s, String inf) {
 		super(i);
@@ -58,6 +62,18 @@ public class Professor extends Person{
 
 	public String getInfo() {
 		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	public String getName() {

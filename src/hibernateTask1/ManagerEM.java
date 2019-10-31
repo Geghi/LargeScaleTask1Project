@@ -10,41 +10,16 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 public class ManagerEM {
-	private EntityManagerFactory factory;
+	private static EntityManagerFactory factory;
 	private EntityManager entityManager;
 
 	public void setup() {
-		factory = Persistence.createEntityManagerFactory("test");
+		factory = Persistence.createEntityManagerFactory("studentsratings");
 
 	}
 
 	public void exit() {
 		factory.close();
-	}
-
-	public Student createStudent(String username, String password, boolean admin, Degree degree) {
-		System.out.println("Creating a new student");
-
-		Student student = new Student(0, username, password, admin);
-		degree.getStudent().add(student);
-		student.setDeg(degree);
-
-		try {
-			entityManager = factory.createEntityManager();
-			entityManager.getTransaction().begin();
-			entityManager.persist(student);
-			entityManager.getTransaction().commit();
-			System.out.println("student Added");
-			return student;
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a student!");
-		} finally {
-			entityManager.close();
-		}
-		return student;
-
 	}
 
 	public Degree createDegree(String name) {
@@ -93,17 +68,20 @@ public class ManagerEM {
 
 	}
 
-	public Subject createSubject(String name, int credits, String info, Professor professor, Degree degree) {
+	public Subject createSubject(String name, int credits, String info, int profId, int degreeId) {
 		System.out.println("Creating a new subject");
 
 		Subject subject = new Subject(0, name, credits, info);
-		subject.getProfessor().add(professor);
-		professor.getSubject().add(subject);
-		degree.getSubject().add(subject);
-		subject.setDeg(degree);
 
 		try {
 			entityManager = factory.createEntityManager();
+			Professor professor = entityManager.find(Professor.class, profId);
+			Degree degree = entityManager.find(Degree.class, degreeId);
+			subject.getProfessor().add(professor);
+			professor.getSubject().add(subject);
+			degree.getSubject().add(subject);
+			subject.setDeg(degree);
+
 			entityManager.getTransaction().begin();
 			entityManager.persist(subject);
 			entityManager.getTransaction().commit();
@@ -120,16 +98,20 @@ public class ManagerEM {
 
 	}
 
-	public SubjectComment createSubjectComment(String text, Date date, Student student, Subject subject) {
+	public SubjectComment createSubjectComment(String text, Date date, Student student, int subjectId) {
 		System.out.println("Creating a new subjectComment");
 
-		SubjectComment subjectComment = new SubjectComment(0, text, date);
-		subject.getSubjectComments().add(subjectComment);
-		subjectComment.setStud(student);
-		subjectComment.setSubj(subject);
+		SubjectComment subjectComment = null;
 
 		try {
 			entityManager = factory.createEntityManager();
+			Subject subj = entityManager.find(Subject.class, subjectId);
+
+			subjectComment = new SubjectComment(0, text, date);
+			subj.getSubjectComments().add(subjectComment);
+			subjectComment.setStud(student);
+			subjectComment.setSubj(subj);
+
 			entityManager.getTransaction().begin();
 			entityManager.persist(subjectComment);
 			entityManager.getTransaction().commit();
@@ -146,26 +128,30 @@ public class ManagerEM {
 
 	}
 
-	public ProfessorComment createProfessorComment(String text, Date date, Student student, Professor professor) {
+	public ProfessorComment createProfessorComment(String text, Date date, Student student, int profId) {
 		System.out.println("Creating a new professorComment");
 
-		ProfessorComment professorComment = new ProfessorComment(0, text, date);
-		professor.getProfessorComments().add(professorComment);
-		professorComment.setStud(student);
-		professorComment.setProf(professor);
+		ProfessorComment professorComment = null;
 
 		try {
 			entityManager = factory.createEntityManager();
+			Professor prof = entityManager.find(Professor.class, profId);
+
+			professorComment = new ProfessorComment(0, text, date);
+			prof.getProfessorComments().add(professorComment);
+			professorComment.setStud(student);
+			professorComment.setProf(prof);
+
 			entityManager.getTransaction().begin();
 			entityManager.persist(professorComment);
 			entityManager.getTransaction().commit();
 			System.out.println("professorComment Added");
+			return professorComment;
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.println("A problem occurred in updating a professorComment!");
 		} finally {
-			// entityManager.getTransaction().commit();
 			entityManager.close();
 		}
 		return professorComment;
@@ -209,8 +195,8 @@ public class ManagerEM {
 		List<Subject> results = new ArrayList<>();
 		System.out.println("Getting a List of subjects based on the degree");
 
-		String selectionSubjects = "SELECT s FROM Subjects s";
-		String selectionSubjectByDegree = "SELECT s FROM Subjects s WHERE degreeId = ?1";
+		String selectionSubjects = "SELECT s FROM Subjects s ORDER BY s.name";
+		String selectionSubjectByDegree = "SELECT s FROM Subjects s WHERE degreeId = ?1 ORDER BY s.name";
 		try {
 			entityManager = factory.createEntityManager();
 			if (degree < 0) {
@@ -238,13 +224,14 @@ public class ManagerEM {
 		List<Professor> results = new ArrayList<>();
 		System.out.println("Getting a List of professors based on the degree");
 
-		String selectionProfessors = "SELECT p FROM Professors p";
-		String selectionProfessorByDegree = "SELECT p FROM Subjects s JOIN s.professor p WHERE s.deg.id = ?1";
+		String selectionProfessors = "SELECT p FROM Professors p ORDER BY p.surname, p.name";
+		String selectionProfessorByDegree = "SELECT p FROM Subjects s JOIN s.professor p WHERE s.deg.id = ?1 ORDER BY p.surname, p.name";
 		try {
 			entityManager = factory.createEntityManager();
 			if (degree < 0) {
 				TypedQuery<Professor> query = entityManager.createQuery(selectionProfessors, Professor.class);
 				results = query.getResultList();
+
 			} else {
 
 				TypedQuery<Professor> query = entityManager.createQuery(selectionProfessorByDegree, Professor.class);
@@ -265,8 +252,9 @@ public class ManagerEM {
 	public List<Comment> getSubjectComments(int subjectId) {
 		List<Comment> results = new ArrayList<>();
 		System.out.println("Getting a list of subject comments");
-
-		String selectionSubjectComments = "SELECT sc FROM SubjectComments sc WHERE sc.subj.id = ?1";
+		if (subjectId == -1)
+			return results;
+		String selectionSubjectComments = "SELECT sc FROM SubjectComments sc WHERE sc.subj.id = ?1 ORDER BY sc.date";
 		try {
 			entityManager = factory.createEntityManager();
 			TypedQuery<Comment> query = entityManager.createQuery(selectionSubjectComments, Comment.class);
@@ -283,20 +271,18 @@ public class ManagerEM {
 		return results;
 	}
 
-	public List<Comment> getProfessorComments(int subjectId) {
+	public List<Comment> getProfessorComments(int profId) {
 		List<Comment> results = new ArrayList<>();
 		System.out.println("Getting a list of professor comments");
+		if (profId == -1)
+			return results;
 
-		String selectionProfessorComments = "SELECT pc FROM ProfComments pc WHERE pc.prof.id = ?1";
+		String selectionProfessorComments = "SELECT pc FROM ProfComments pc WHERE pc.prof.id = ?1 ORDER BY pc.date";
 		try {
 			entityManager = factory.createEntityManager();
 			TypedQuery<Comment> query = entityManager.createQuery(selectionProfessorComments, Comment.class);
-			query.setParameter(1, subjectId);
+			query.setParameter(1, profId);
 			results = query.getResultList();
-
-			for (int i = 0; i < results.size(); i++) {
-				System.out.println(results.get(i).getText());
-			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -313,19 +299,15 @@ public class ManagerEM {
 		System.out.println("Getting a list of degree courses");
 
 		String selectionDegreeComments = "SELECT d FROM Degree d";
+
 		try {
 			entityManager = factory.createEntityManager();
 			TypedQuery<Degree> query = entityManager.createQuery(selectionDegreeComments, Degree.class);
-
 			results = query.getResultList();
-
-			for (int i = 0; i < results.size(); i++) {
-				System.out.println(results.get(i).getName());
-			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving Degree courses!");
+			System.err.println("A problem occurred in retriving Degree courses!");
 
 		} finally {
 			entityManager.close();
@@ -333,188 +315,272 @@ public class ManagerEM {
 		return results;
 	}
 
-	public int getDegreeId(String name) {
-		Degree result;
-		System.out.println("Getting a degree id");
-
-		String selectionDegreeComments = "SELECT d FROM Degree d WHERE d.name = ?1";
-		try {
-			entityManager = factory.createEntityManager();
-			TypedQuery<Degree> query = entityManager.createQuery(selectionDegreeComments, Degree.class);
-			query.setParameter(1, name);
-			result = query.getSingleResult();
-
-			System.out.println(result.getId());
-			return result.getId();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving degree id!");
-
-		} finally {
-			entityManager.close();
-		}
-		return -1;
-	}
-
-	public String getDegreeName(int degreeId) {
-		Degree result;
-		System.out.println("Getting a degree name");
-
-		try {
-			entityManager = factory.createEntityManager();
-			result = entityManager.find(Degree.class, degreeId);
-
-			System.out.println(result.getName());
-			return result.getName();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving degree id!");
-
-		} finally {
-			entityManager.close();
-		}
-		return null;
-	}
-
-	public void updateCommentProf(int profCommentId, String text, int userId) {
+	public boolean updateCommentProf(int profCommentId, String text, int userId) {
 		System.out.println("Updating a professor comment");
-
+		boolean updated = false;
 		Date date = new Date();
 
 		try {
 			entityManager = factory.createEntityManager();
-			entityManager.getTransaction().begin();
 			ProfessorComment professorComment = entityManager.find(ProfessorComment.class, profCommentId);
-			professorComment.setText(text);
-			professorComment.setDate(date.toString());
-			entityManager.getTransaction().commit();
-			System.out.println("professor comment updated");
+			// if the user is the owner.
+			if (professorComment.getStud().getId() == userId) {
+				entityManager.getTransaction().begin();
+				professorComment.setText(text);
+				professorComment.setDate(date.toString());
+				entityManager.getTransaction().commit();
+				System.out.println("professor comment updated");
+				updated = true;
+			} else { // if the user is not owner --> error
+				System.err.println("You are not the owner of that comment, please select another comment");
+				entityManager.close();
+				return updated;
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a professor comment!");
+			System.err.println("A problem occurred in updating a professor comment!");
 
 		} finally {
 			entityManager.close();
 		}
+		return updated;
 	}
 
-	public void updateCommentSubject(int subjectCommentId, String text, int userId) {
+	public boolean updateCommentSubject(int subjectCommentId, String text, int userId) {
 		System.out.println("Updating a subject comment");
-
+		boolean updated = false;
 		Date date = new Date();
 
 		try {
 			entityManager = factory.createEntityManager();
-			entityManager.getTransaction().begin();
 			SubjectComment subjectComment = entityManager.find(SubjectComment.class, subjectCommentId);
-			subjectComment.setText(text);
-			subjectComment.setDate(date.toString());
-			entityManager.getTransaction().commit();
-			System.out.println("subject comment updated");
 
+			// if the user is the owner.
+			if (subjectComment.getStud().getId() == userId) {
+				entityManager.getTransaction().begin();
+				subjectComment.setText(text);
+				subjectComment.setDate(date.toString());
+				entityManager.getTransaction().commit();
+				System.out.println("subject comment updated");
+				updated = true;
+
+			} else { // if user is not owner --> error
+				System.err.println("You are not the owner of that comment, please select another comment");
+				entityManager.close();
+				return updated;
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a subject comment!");
+			System.err.println("A problem occurred in updating a subject comment!");
 
 		} finally {
 			entityManager.close();
 		}
+		return updated;
 	}
 
-	public void deleteCommentSubject(int subjectCommentId, int userId, boolean admin) {
+	public boolean deleteCommentSubject(int subjectCommentId, int userId, boolean admin) {
+		boolean deleted = false;
 		try {
 			entityManager = factory.createEntityManager();
 			entityManager.getTransaction().begin();
 			SubjectComment subjectComment = entityManager.find(SubjectComment.class, subjectCommentId);
 
-			if (!admin) { // if the user is not the admin --> check if he is the owner of the comment.
-
-				if (subjectComment.getStud().getId() == userId)
-					entityManager.remove(subjectComment);
-				else {
-
-					System.out.println("You are not the owner of that comment, please select another comment");
-					return;
-				}
-			} else // if the user is the admin i just delete the comment
+			// if user is owner OR admin he can delete the comment
+			if (subjectComment.getStud().getId() == userId || admin) {
 				entityManager.remove(subjectComment);
+				deleted = true;
+			} else { // if user is not owner AND he is not admin --> error
+				System.err.println("You are not the owner of that comment, please select another comment");
+				return deleted;
+			}
 
 			entityManager.getTransaction().commit();
 			System.out.println("subject comment removed");
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in removing a subject comment!");
+			System.err.println("A problem occurred in removing a subject comment!");
 
 		} finally {
 			entityManager.close();
 		}
+		return deleted;
 	}
 
-	public void deleteCommentProf(int profCommentId, int userId, boolean admin) {
+	public boolean deleteCommentProf(int profCommentId, int userId, boolean admin) {
+		boolean deleted = false;
 		try {
 			entityManager = factory.createEntityManager();
 			entityManager.getTransaction().begin();
 			ProfessorComment professorComment = entityManager.find(ProfessorComment.class, profCommentId);
 
-			if (!admin) { // if the user is not the admin --> check if he is the owner of the comment.
-
-				if (professorComment.getStud().getId() == userId)
-					entityManager.remove(professorComment);
-				
-				else {
-					System.out.println("You are not the owner of that comment, please select another comment");
-					return;
-				}
-
-			} else // if the user is the admin i just delete the comment
+			// if user is owner OR admin he can delete the comment
+			if (professorComment.getStud().getId() == userId || admin) {
 				entityManager.remove(professorComment);
+				deleted = true;
+			} else { // if user is not owner AND he is not admin --> error
+				System.err.println("You are not the owner of that comment, please select another comment");
+				return deleted;
+			}
 
 			entityManager.getTransaction().commit();
 			System.out.println("professor comment removed");
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in removing a professor comment!");
+			System.err.println("A problem occurred in removing a professor comment!");
+
+		} finally {
+			entityManager.close();
+		}
+		return deleted;
+	}
+
+	public int newDegreeIndex(Student student, List<Degree> degreeList) {
+		int i = 0;
+		System.out.println("test");
+
+		try {
+			entityManager = factory.createEntityManager();
+			Degree degree = entityManager.find(Degree.class, student.getDeg().getId());
+			for (i = 1; i < degreeList.size(); i++) {
+				System.out.println(degreeList.get(i).getName() + " " + degree.getName());
+				if (degreeList.get(i).getName().equals(degree.getName())) {
+					break;
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("A problem occurred in getting the student degree");
+
+		} finally {
+			entityManager.close();
+		}
+		return i;
+	}
+
+	void editProfessor(int profId, String name, String surname, String info) {
+		System.out.println("Updating a professor");
+		try {
+			entityManager = factory.createEntityManager();
+			Professor professor = entityManager.find(Professor.class, profId);
+
+			entityManager.getTransaction().begin();
+			professor.setName(name);
+			professor.setSurname(surname);
+			professor.setInfo(info);
+			entityManager.getTransaction().commit();
+			System.out.println("professor updated");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("A problem occurred in updating a professor!");
 
 		} finally {
 			entityManager.close();
 		}
 	}
 
-	public static void main(String[] args) {
+	public boolean editSubject(int subjectId, String name, int credits, String info, int profId) {
+		System.out.println("Updating a subject");
+		boolean updated = false;
+		try {
+			entityManager = factory.createEntityManager();
+			Subject subject = entityManager.find(Subject.class, subjectId);
+			Professor professor = null;
+			if (profId != 0) {
+				professor = entityManager.find(Professor.class, profId);
+			}
+			if (profId != 0 && professor == null) {
+				System.err.println("the inserted professor Id doesn't exixst");
+				entityManager.close();
+				return updated;
+			}
+			entityManager.getTransaction().begin();
+			subject.setName(name);
+			subject.setCredits(credits);
+			;
+			subject.setInfo(info);
+			if (professor != null)
+				subject.getProfessor().add(professor);
+			entityManager.getTransaction().commit();
+			updated = true;
+			System.out.println("subject updated");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("A problem occurred in updating a subject!");
 
-		ManagerEM manager = new ManagerEM();
-		manager.setup();
-
-		Date date = new Date();
-		Degree degree = manager.createDegree("xdsST");
-		Student student = manager.createStudent("Ge", "Geghi", true, degree);
-		Professor professor = manager.createProfessor("Coco", "cococcioni", "faccio informatica");
-		Subject subject = manager.createSubject("Fondamenti di informatica I", 12, "subinfo", professor, degree);
-		manager.createSubjectComment("prova commento", date, student, subject);
-		manager.createProfessorComment("prova commento", date, student, professor);
-
-		//TESTS
-		manager.checkUser("Ge", "Geghi");
-		manager.getSubjects(1);
-		manager.getProfessors(1);
-		manager.getSubjectComments(1);
-		manager.getProfessorComments(1);
-		manager.getDegreeCourses();
-		manager.getDegreeId("TEST");
-		manager.getDegreeName(2);
-		manager.updateCommentProf(1, "CommentoModificato YEEE", 1);
-		manager.updateCommentSubject(1, "CommentoModificato YEEE", 1);
-		manager.deleteCommentSubject(2, 2, false);
-		manager.deleteCommentProf(1, 9, false);
-
-		manager.exit();
-		System.out.println("Finished");
-
+		} finally {
+			entityManager.close();
+		}
+		return updated;
 	}
+
+	public void deleteProfessor(int profId) {
+		try {
+			entityManager = factory.createEntityManager();
+			Professor professor = entityManager.find(Professor.class, profId);
+			entityManager.getTransaction().begin();
+			entityManager.remove(professor);
+			entityManager.getTransaction().commit();
+			System.out.println("professor removed");
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("A problem occurred in removing a professor");
+
+		} finally {
+			entityManager.close();
+		}
+	}
+
+	public void deleteSubject(int subjectId) {
+		try {
+			entityManager = factory.createEntityManager();
+			Subject subject = entityManager.find(Subject.class, subjectId);
+			entityManager.getTransaction().begin();
+			entityManager.remove(subject);
+			entityManager.getTransaction().commit();
+			System.out.println("subject removed");
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("A problem occurred in removing a subject");
+
+		} finally {
+			entityManager.close();
+		}
+	}
+
 }
+
+//  CREATE STUDENT, NOT USED.
+//	public Student createStudent(String username, String password, boolean admin, Degree degree) {
+//		System.out.println("Creating a new student");
+//	
+//		Student student = new Student(0, username, password, admin);
+//		degree.getStudent().add(student);
+//		student.setDeg(degree);
+//	
+//		try {
+//			entityManager = factory.createEntityManager();
+//			entityManager.getTransaction().begin();
+//			entityManager.persist(student);
+//			entityManager.getTransaction().commit();
+//			System.out.println("student Added");
+//			return student;
+//	
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			System.out.println("A problem occurred in updating a student!");
+//		} finally {
+//			entityManager.close();
+//		}
+//		return student;
+//	
+//	} 
+
 
 //the degree default constructor is used in the checkUser when the List<Student> is created since we don't
 //pass to the function the degree.
