@@ -1,12 +1,10 @@
 package hibernateTask1;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import java.text.*;
+import java.time.*  ;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import javax.persistence.*;
 
 //import javafx.beans.property.*;
 
@@ -19,7 +17,9 @@ public abstract class Comment {
 	private int id;
 	private String text;
 	private String date;
-
+        
+        static String format = "yyyy-MM-dd HH:mm:ss";
+        
 	public Comment() {
 
 	}
@@ -27,7 +27,7 @@ public abstract class Comment {
 	public Comment(int i, String t, Date d) {
 		id = i;
 		text = t;
-		date = d.toString();
+		date = new SimpleDateFormat(format).format(d);
 	}
 
 	public int getId() {
@@ -38,8 +38,8 @@ public abstract class Comment {
 		this.text = text;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setDate(Date date) {
+		this.date = new SimpleDateFormat(format).format(date);
 	}
 
 	public String getText() {

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 //import javafx.beans.property.*;
 
 @Entity(name = "ProfComments")
-@Table(name = "prof_Comments")
+@Table(name = "prof_comments")
 public class ProfessorComment extends Comment {
 
 	@ManyToOne(fetch = FetchType.LAZY)

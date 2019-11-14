@@ -37,7 +37,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a degree!");
+			System.err.println("A problem occurred in updating a degree!");
 		} finally {
 			entityManager.close();
 		}
@@ -60,7 +60,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a professor!");
+			System.err.println("A problem occurred in updating a professor!");
 		} finally {
 			entityManager.close();
 		}
@@ -90,7 +90,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a subject!");
+			System.err.println("A problem occurred in updating a subject!");
 		} finally {
 			entityManager.close();
 		}
@@ -119,7 +119,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a subjectComment!");
+			System.err.println("A problem occurred in updating a subjectComment!");
 		} finally {
 			entityManager.close();
 		}
@@ -150,7 +150,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in updating a professorComment!");
+			System.err.println("A problem occurred in updating a professorComment!");
 		} finally {
 			entityManager.close();
 		}
@@ -173,7 +173,7 @@ public class ManagerEM {
 			if (results.size() == 0) {
 				return null;
 			} else if (results.size() > 1) {
-				System.out.println("In the Database are present more than one user with the same username");
+				System.err.println("In the Database are present more than one user with the same username");
 			} else {
 				System.out.println(results.get(0).getUsername() + " " + results.get(0).getPassword() + " "
 						+ results.get(0).getDeg().getId());
@@ -182,7 +182,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving a student!");
+			System.err.println("A problem occurred in retriving a student!");
 
 		} finally {
 			entityManager.close();
@@ -211,7 +211,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving subjects!");
+			System.err.println("A problem occurred in retriving subjects!");
 
 		} finally {
 			entityManager.close();
@@ -241,7 +241,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving professors!");
+			System.err.println("A problem occurred in retriving professors!");
 
 		} finally {
 			entityManager.close();
@@ -263,7 +263,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving subject comments!");
+			System.err.println("A problem occurred in retriving subject comments!");
 
 		} finally {
 			entityManager.close();
@@ -286,7 +286,7 @@ public class ManagerEM {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("A problem occurred in retriving professor comments!");
+			System.err.println("A problem occurred in retriving professor comments!");
 
 		} finally {
 			entityManager.close();
@@ -327,7 +327,7 @@ public class ManagerEM {
 			if (professorComment.getStud().getId() == userId) {
 				entityManager.getTransaction().begin();
 				professorComment.setText(text);
-				professorComment.setDate(date.toString());
+				professorComment.setDate(date);
 				entityManager.getTransaction().commit();
 				System.out.println("professor comment updated");
 				updated = true;
@@ -360,7 +360,7 @@ public class ManagerEM {
 			if (subjectComment.getStud().getId() == userId) {
 				entityManager.getTransaction().begin();
 				subjectComment.setText(text);
-				subjectComment.setDate(date.toString());
+				subjectComment.setDate(date);
 				entityManager.getTransaction().commit();
 				System.out.println("subject comment updated");
 				updated = true;
@@ -440,7 +440,7 @@ public class ManagerEM {
 
 	public int newDegreeIndex(Student student, List<Degree> degreeList) {
 		int i = 0;
-		System.out.println("test");
+		//System.out.println("test");
 
 		try {
 			entityManager = factory.createEntityManager();
