@@ -68,17 +68,29 @@ public class ManagerEM {
 
 	}
 
-	public Subject createSubject(String name, int credits, String info, int profId, int degreeId) {
+	public Subject createSubject(String name, int credits, String info, String profIdStr, int degreeId) {
 		System.out.println("Creating a new subject");
 
 		Subject subject = new Subject(0, name, credits, info);
-
+		String[] professorsId = profIdStr.split("," , 5);
 		try {
 			entityManager = factory.createEntityManager();
-			Professor professor = entityManager.find(Professor.class, profId);
 			Degree degree = entityManager.find(Degree.class, degreeId);
-			subject.getProfessor().add(professor);
-			professor.getSubject().add(subject);
+			int profId = 0;
+			for(String p : professorsId) {
+				profId = Integer.parseInt(p);
+				Professor professor = null;
+				if (profId > 0) {
+					professor = entityManager.find(Professor.class, profId);
+				}
+				if (profId > 0 && professor == null) {
+					System.err.println("the inserted professor Id doesn't exixst");
+					entityManager.close();
+					return null;
+				}
+				subject.getProfessor().add(professor);
+				professor.getSubject().add(subject);
+			}
 			degree.getSubject().add(subject);
 			subject.setDeg(degree);
 
@@ -482,33 +494,44 @@ public class ManagerEM {
 		}
 	}
 
-	public boolean editSubject(int subjectId, String name, int credits, String info, int profId) {
+	
+	public boolean editSubject(int subjectId, String name, int credits, String info, String profIdStr) {
 		System.out.println("Updating a subject");
 		boolean updated = false;
+		String[] professorsId = profIdStr.split("," , 5);
 		try {
 			entityManager = factory.createEntityManager();
 			Subject subject = entityManager.find(Subject.class, subjectId);
-			Professor professor = null;
-			if (profId != 0) {
-				professor = entityManager.find(Professor.class, profId);
+			while(subject.getProfessor().size() > 0){
+				Professor prof = subject.getProfessor().iterator().next();
+				subject.removeProf(prof);
 			}
-			if (profId != 0 && professor == null) {
-				System.err.println("the inserted professor Id doesn't exixst");
-				entityManager.close();
-				return updated;
-			}
-			entityManager.getTransaction().begin();
-			subject.setName(name);
-			subject.setCredits(credits);
-			;
-			subject.setInfo(info);
-			if (professor != null)
-				subject.getProfessor().add(professor);
-			entityManager.getTransaction().commit();
-			updated = true;
+			
+			int profId = 0;
+			
+			for(String p : professorsId) {
+				profId = Integer.parseInt(p);
+				Professor professor = null;
+				if (profId > 0) {
+					professor = entityManager.find(Professor.class, profId);
+				}
+				if (profId > 0 && professor == null) {
+					System.err.println("the inserted professor Id doesn't exixst");
+					entityManager.close();
+					return updated;
+				}
+				entityManager.getTransaction().begin();
+				subject.setName(name);
+				subject.setCredits(credits);
+				subject.setInfo(info);
+				if (professor != null)
+					subject.getProfessor().add(professor);
+				entityManager.getTransaction().commit();
+				updated = true;
+			}	
 			System.out.println("subject updated");
-		} catch (Exception ex) {
-			ex.printStackTrace();
+			
+		} catch (NumberFormatException ex) {
 			System.err.println("A problem occurred in updating a subject!");
 
 		} finally {

@@ -432,7 +432,7 @@ public class GraphicInterface extends Application {
                     System.err.println("Select a professor");
                     return;
                 }
-                manager.editProfessor(professor.getId() ,name.getText(), surnameAndCredits.getText(),addInfo.getText());
+                manager.editProfessor(professor.getId(), name.getText(), surnameAndCredits.getText(),addInfo.getText());
                 info.setText(addInfo.getText());
                 name.clear();
                 surnameAndCredits.clear();
@@ -448,15 +448,13 @@ public class GraphicInterface extends Application {
                 int professorId = 0;
                 int credits = 0;
                 try{
-                    if(!profId.getText().isBlank())
-                        professorId = Integer.valueOf(profId.getText());
                     if(!surnameAndCredits.getText().isBlank())
                         credits = Integer.valueOf(surnameAndCredits.getText());
-                }catch(NumberFormatException e) {
+                } catch(NumberFormatException e) {
                     System.err.println("Invalid input in numeric fields");
                     return;
                 }
-                if(manager.editSubject(subject.getId() ,name.getText(), credits, addInfo.getText(), professorId)) {
+                if(manager.editSubject(subject.getId() ,name.getText(), credits, addInfo.getText(), profId.getText())) {
                     info.setText(addInfo.getText());
                     name.clear();
                     surnameAndCredits.clear();
@@ -518,7 +516,7 @@ public class GraphicInterface extends Application {
                 try {
                     int credits = Integer.parseInt(surnameAndCredits.getText());
                     if(credits > 0 && credits < 50 )
-                        manager.createSubject(name.getText(), credits, addInfo.getText(), Integer.parseInt(profId.getText()), degreeId);
+                        manager.createSubject(name.getText(), credits, addInfo.getText(), profId.getText(), degreeId);
                     else {
                         System.err.println("invalid credits value, insert a number between 1 and 50");
                         return;

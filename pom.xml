@@ -6,7 +6,7 @@
 	<artifactId>Task1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>Hibernate Hello World Program</name>
+	<name>task1</name>
 
 	<build>
 		<defaultGoal>install</defaultGoal>

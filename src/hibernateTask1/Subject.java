@@ -59,6 +59,11 @@ public class Subject {
 		credits = c;
 		info = inf;
 	}
+	
+	public void removeProf(Professor prof) {
+        this.professor.remove(prof);
+        prof.getSubject().remove(this);
+    }
 
 	public Set<Professor> getProfessor() {
 		return professor;
