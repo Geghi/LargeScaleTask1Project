@@ -72,12 +72,12 @@ public class ManagerEM {
 		System.out.println("Creating a new subject");
 
 		Subject subject = new Subject(0, name, credits, info);
-		String[] professorsId = profIdStr.split("," , 5);
+		String[] professorsId = profIdStr.split(",", 5);
 		try {
 			entityManager = factory.createEntityManager();
 			Degree degree = entityManager.find(Degree.class, degreeId);
 			int profId = 0;
-			for(String p : professorsId) {
+			for (String p : professorsId) {
 				profId = Integer.parseInt(p);
 				Professor professor = null;
 				if (profId > 0) {
@@ -452,7 +452,7 @@ public class ManagerEM {
 
 	public int newDegreeIndex(Student student, List<Degree> degreeList) {
 		int i = 0;
-		//System.out.println("test");
+		// System.out.println("test");
 
 		try {
 			entityManager = factory.createEntityManager();
@@ -494,41 +494,47 @@ public class ManagerEM {
 		}
 	}
 
-	
 	public boolean editSubject(int subjectId, String name, int credits, String info, String profIdStr) {
 		System.out.println("Updating a subject");
-		boolean updated = false;
-		String[] professorsId = profIdStr.split("," , 5);
+		boolean updated = false;	
 		try {
 			entityManager = factory.createEntityManager();
 			Subject subject = entityManager.find(Subject.class, subjectId);
-			while(subject.getProfessor().size() > 0){
-				Professor prof = subject.getProfessor().iterator().next();
-				subject.removeProf(prof);
+			entityManager.getTransaction().begin();
+			subject.setName(name);
+			subject.setCredits(credits);
+			subject.setInfo(info);
+			entityManager.getTransaction().commit();
+			
+			if(!profIdStr.isBlank()) {
+				String[] professorsId = profIdStr.split("," , 5);
+				while(subject.getProfessor().size() > 0){
+					Professor prof = subject.getProfessor().iterator().next();
+					subject.removeProf(prof);
+				}
+				
+				int profId = 0;
+				
+				for(String p : professorsId) {
+					profId = Integer.parseInt(p);
+					Professor professor = null;
+					if (profId > 0) {
+						professor = entityManager.find(Professor.class, profId);
+					}
+					if (profId > 0 && professor == null) {
+						System.err.println("the inserted professor Id doesn't exixst");
+						entityManager.close();
+						return updated;
+					}
+					entityManager.getTransaction().begin();
+					if (professor != null)
+						subject.getProfessor().add(professor);
+					entityManager.getTransaction().commit();
+					updated = true;
+				}	
 			}
 			
-			int profId = 0;
-			
-			for(String p : professorsId) {
-				profId = Integer.parseInt(p);
-				Professor professor = null;
-				if (profId > 0) {
-					professor = entityManager.find(Professor.class, profId);
-				}
-				if (profId > 0 && professor == null) {
-					System.err.println("the inserted professor Id doesn't exixst");
-					entityManager.close();
-					return updated;
-				}
-				entityManager.getTransaction().begin();
-				subject.setName(name);
-				subject.setCredits(credits);
-				subject.setInfo(info);
-				if (professor != null)
-					subject.getProfessor().add(professor);
-				entityManager.getTransaction().commit();
-				updated = true;
-			}	
+			updated = true;
 			System.out.println("subject updated");
 			
 		} catch (NumberFormatException ex) {
@@ -537,6 +543,7 @@ public class ManagerEM {
 		} finally {
 			entityManager.close();
 		}
+	
 		return updated;
 	}
 
@@ -577,36 +584,3 @@ public class ManagerEM {
 	}
 
 }
-
-//  CREATE STUDENT, NOT USED.
-//	public Student createStudent(String username, String password, boolean admin, Degree degree) {
-//		System.out.println("Creating a new student");
-//	
-//		Student student = new Student(0, username, password, admin);
-//		degree.getStudent().add(student);
-//		student.setDeg(degree);
-//	
-//		try {
-//			entityManager = factory.createEntityManager();
-//			entityManager.getTransaction().begin();
-//			entityManager.persist(student);
-//			entityManager.getTransaction().commit();
-//			System.out.println("student Added");
-//			return student;
-//	
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//			System.out.println("A problem occurred in updating a student!");
-//		} finally {
-//			entityManager.close();
-//		}
-//		return student;
-//	
-//	} 
-
-
-//the degree default constructor is used in the checkUser when the List<Student> is created since we don't
-//pass to the function the degree.
-//same for all other default constructos.
-
-//rollback

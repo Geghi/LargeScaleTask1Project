@@ -18,7 +18,7 @@ public abstract class Comment {
 	private String text;
 	private String date;
         
-        static String format = "yyyy-MM-dd HH:mm:ss";
+    private static String format = "yyyy-MM-dd HH:mm:ss";
         
 	public Comment() {
 

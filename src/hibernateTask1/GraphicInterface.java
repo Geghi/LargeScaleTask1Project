@@ -29,9 +29,7 @@ public class GraphicInterface extends Application {
     ObservableList<Degree> degreeList;
     Student student;
     CommentTable comments;
-    ProfSubjectTable table;
-    Integer idTmp;
-	
+    ProfSubjectTable table;	
   
   @Override
     public void start(Stage primaryStage) {
@@ -330,7 +328,6 @@ public class GraphicInterface extends Application {
                     name.setText(p.getName());
                     surnameAndCredits.setText(p.getSurname());
                     addInfo.setText(p.getInfo());
-                    idTmp = p.getId();
                 }
             }else{
                 Subject s = (Subject)o;
@@ -340,7 +337,6 @@ public class GraphicInterface extends Application {
                     name.setText(s.getName());
                     surnameAndCredits.setText(Integer.toString(s.getCredits()));
                     addInfo.setText(s.getInfo());
-                    idTmp = s.getId();
                 }
             }
         }
@@ -437,7 +433,6 @@ public class GraphicInterface extends Application {
                 name.clear();
                 surnameAndCredits.clear();
                 addInfo.clear();
-                idTmp = 0;
                 setSubjProfList(degreeId);
             }else{
                 Subject subject = (Subject) table.getSelectionModel().getSelectedItem();
