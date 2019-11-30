@@ -1,0 +1,23 @@
+% ----- android wearable module -----
+\begin{lstlisting}[language=Java,  basicstyle=\footnotesize]
+public boolean deleteCommentSubject(int subjectCommentId, int userId, boolean admin) {
+	boolean deleted = false;
+	try {
+		entityManager = factory.createEntityManager();
+		entityManager.getTransaction().begin();
+		SubjectComment subjectComment = entityManager.find(SubjectComment.class,
+								   subjectCommentId);
+
+		if (subjectComment.getStud().getId() == userId) {
+			entityManager.remove(subjectComment);
+                entityManager.getTransaction().commit();
+			deleted = true;
+		} else {
+                entityManager.close();
+			return deleted;
+		}
+	} 
+        ...
+	return deleted;
+}
+\end{lstlisting}
