@@ -2,7 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[italian]{babel}
+\usepackage[english]{babel}
 \usepackage{frontespizio}
 \usepackage{graphicx}
 \usepackage{listings}
@@ -11,7 +11,7 @@
 \usepackage[font=small,labelfont=bf]{caption}
 
 \begin{document}
-
+\selectlanguage{english}
 \baselineskip 13pt
 	
 % ---- FRONTESPIZIO ----- 
@@ -35,11 +35,11 @@
 \clearpage
 
 % ----- INDICE -----
-	\tableofcontents
+	\tableofcontents\thispagestyle{empty}
 	\clearpage
 
 
-\section{Introduction}
+\section{Introduction}\pagenumbering{arabic}
 This is an application to browse and evaluate university courses and professors, called \textbf{Student-Evaluation}.\\
 The application is developed to allow students (users) to view all the courses and professors of a specific university with related comments.\\ 
 There are two buttons to switch the view of the list of professors to the list of courses: this action will update the table below. By clicking an element of this table, on the left section, the user can see more information about the chosen element: general information and comments.\\ 
@@ -52,7 +52,7 @@ There is no form to register into the application, it is assumed that users are 
 \begin{minipage}{\linewidth}
 \begin{center}
 \vspace{8mm}
-\includegraphics[width=150mm]{./images/diagrams/Mockup.pdf} 
+\includegraphics[width=\textwidth]{./images/diagrams/Mockup.pdf} 
 \vspace{3mm}
 \captionof{figure}{Mockup}
 \label{fig:mockup}
@@ -93,9 +93,9 @@ The system has to allow the administrator to carry out basic functions such as:
 \subsection{Non-functional requirements}
 \begin{itemize}
 \item Usability, ease of use and intuitiveness of the application by the user.
-\item Avaliable, the service is guarantee h24.
-\item The system shall support up to 2000 simultaneous users.
-\item The system should provide access to the database with no more than 10 seconds of latency.
+\item Avaliablility, with the service guaranteed h24.
+\item The system should support simultaneous users.
+\item The system should provide access to the database with a few seconds of latency.
 \end{itemize}
 
 \clearpage
@@ -111,32 +111,29 @@ The system has to allow the administrator to carry out basic functions such as:
 \end{itemize}
 
 \subsection{Use Cases Description}
-The actions of this application are:\\
-\textbf{Log In}: This use case describes how the user logs into the StudentEvaluation system.\\
-\textbf{Log out}: This use case describes how the user exits from StudentEvaluation system.\\
-\textbf{Browse professors}: This use case describes how the system retrieve all the professors\\
-\textbf{Find professor}: This use case describes the selection of a single professor from the list\\
-\textbf{View professor}: This use case allows a user to view the informations about a professor.\\
-\textbf{Browse subjects}: This use case describes how the system retrieve all the subjects\\
-\textbf{Find subject}: This use case describes the selection of a single subject from the list\\
-\textbf{View subject}: This use case allows a user to view the informations about a subject.\\
-\textbf{Browse degree courses}: This use case describes how the system retrieve all the degree courses\\
-\textbf{Find degree course}: This use case describes the selection of a single degree course from the list\\
-\textbf{Add prof/subject}: This use case allows an admin to add a professor/subject to related list.\\
-\textbf{Update prof/subject}: This use case allows an admin to modify the informations related to a professor/subject.\\
-\textbf{Delete prof/subject}: This use case allows an admin to remove a professor/subject from related list.\\
-\textbf{Add comment}: This use case allows a user to add a comment on a professor/subject.\\
-\textbf{Browse comments}: This use case describes how the system retrieve all the comments\\
-\textbf{Find comment}: This use case describes the selection of a single comment from the list\\
-\textbf{View comment}: This use case allows a user to view the informations about a comment.\\
-\textbf{Delete Comment}: This use case allows a user to delete his comment from a professor/course list.\\
-\textbf{Update Comment}: This use case allows a user to update his comment relatet to a professor/course.\\
-
+\begin{table}[h]
+\centering
+\begin{tabular}{p{0.2\textwidth}p{0.1\textwidth}lp{0.5\textwidth}}
+\hline
+\textbf{Event} & \textbf{UseCase} & \textbf{Actor(s)} & \textbf{Description}\\ \hline
+Log in, Log out & Login,  Logout & Admin, Student & The user logs in/out the application. The system browses the professors' list by the degree course of the logged user and returns it on the interface.\\ \hline
+View all the professors/subjects & Browse, Find, View P/S & User & The user chooses that he wants to view the list of all professors/subjects. The system browses the data on the db and returns them on the interface.\\ \hline
+View the comments and information of a professor/subject & Browse, Find, View C & User & The user clicks on a record of the professor/subject table. The system browses on the db the comments related to that professor/subject and returns them on the interface.\\ \hline
+Add a comment & Add C & Admin, Student & The user submits the text of his comment. The system updates the db and the interface.\\ \hline
+Update a comment & Update C & Admin, Student & The user selects the comment and commits the new text. The system updates the db and the interface.\\ \hline
+Delete a comment & Delete C & Admin, Student & The user selects the comment and submits the delete. The system updates the db and the interface.\\ \hline
+View the professors/subjects by degree & Browse, Find, View P/S & User & The user selects from the choice-boxes the degree course and the list (professors/subjects) he's interested in. The system browses on the db the professors/subjects filtered by the chosen degree and returns them on the interface.\\ \hline
+Add a professor/subject & Add P/S & Admin & The user submits the name and other information of the new professor/subject. The system updates the db and the interface.\\ \hline
+Update a professor/subject & Update P/S & Admin & The user selects the professor/subject and commits the new information. The system updates the db and the interface.\\ \hline
+Delete a professor/subject & Delete P/S & Admin & The user selects the professor/subject and submits the delete. The system updates the db and the interface.\\ \hline
+\end{tabular}
+\end{table}
 
 \begin{minipage}{\linewidth}
 \begin{center}
 \vspace{8mm}
-\includegraphics[ height=150mm, angle=90]{./images/diagrams/UseCases.png} 
+\includegraphics[ width=0.95\textheight, angle=90]{./images/diagrams/UseCases.png} 
+\captionof{figure}{Use cases diagram}
 \vspace{3mm}
 \end{center}
 \end{minipage}
@@ -145,7 +142,7 @@ The actions of this application are:\\
 \clearpage
 
 
-\section{Calss diagram}
+\section{Class diagram}
 This diagram represent the main entities of the application and the relations between them.
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -278,60 +275,62 @@ Moreover there are 3 classes to manage the graphic user interface:
 % ----- LEVEL DB -----
 \section{Level DB}
 
-An alternative implementation of this application developed using MySql relational database, can be done using a key-value database, so in this chapter is describe an implementation of the application using levelDB.\\
-Key-values databases are one of the simplest examples of NoSQL stores that can be found. In a key-value database, data are persistently stored assigning a value to a uniqle identifier, which takes the name of key; couples of key-values are stored in namespaces (buckets) and in each buckets, keys must be unique. The main strenghts of the key-value database are:
+An alternative implementation of this application developed using MySql relational database can be done using a key-value database, so in this chapter we describe an implementation of the application using levelDB.\\
+Key-values databases are one of the simplest examples of NoSQL stores that can be found. In a key-value database, data are persistently stored assigning a value to a unique identifier, which takes the name of "key"; couples of key-values are stored in namespaces (buckets) and in each bucket, keys must be unique. The main strengths of the key-value database are:
 \begin{itemize}
 \item Simplicity
 \item Speed 
 \item Scalability
 \end{itemize}
-Key-value database are mostly used when speed in retrieving data and ease of storage are more important than the organization of data into complex structures. So, in general, classics RDBMS are preferred when organization and management is more important than perfomances; typically, when a database presents a lot of relations among entities, key-values stores aren’t the best choice. When the structure of our database is simple, instead, we could use the key-value stores because they are more capable of providing higher performances than RDBMS.\\
-It is also true that simple relations between entities are represented in key-value database as well, just by building up keys in a predefined way.\\
-The application we realized is a multi-users one, so it needs a remote and shared database, to whom every users can access at every moment. LevelDB does not support remote usage (differently from other key-value database), so it is not feasible to re-implement our kind of application realizing that tool. Moreover, one of the strenght of LevelDB is the possibility to handle flexibile data, but in our case the data does not vary a lot from their original structure (etc. NULL value are not expected etc.). In conclusion we don’t have many advantages in replicate the application in a key-value architecture.\\
-For illustrative purpose, we tried to recreate the structure of our application using LevelDB.
-First of all, we needed to define the key structure for our entities; to do so, we have choosen to represent the tables in our buckets using the table name, the id of the object we are referring to and the attribute name for the value.
+Key-value databases are mostly used when speed in retrieving data and ease of storage are more important than the organization of data into complex structures. So, in general, classics RDBMS are preferred when organization and management are more important than performances; typically, when a database presents a lot of relations among entities, key-value stores aren’t the best choice. When the structure of our database is simple, instead, we could use the key-value stores because they are more capable of providing higher performances than RDBMS.\\
+It is also true that simple relations between entities are represented in the key-value database as well, just by building up keys in a predefined way.
+
+The application we realized is a multi-users one, so it needs a remote and shared database, to whom every user can access at every moment. LevelDB does not support remote usage (differently from other key-value databases), so it is not feasible to re-implement our kind of application realizing that tool. Moreover, one of the strength of LevelDB is the possibility to handle flexible data but, in our case, the data does not vary a lot from their original structure (etc. NULL value are not expected, etc.). In conclusion, we don’t have many advantages in replicating the application in a key-value architecture.\\
+Just for an illustrative purpose, we tried to recreate the structure of our application using LevelDB.
+First of all, we needed to define the key structure for our entities; to do so, we have chosen to represent the tables in our buckets using the table name, the id of the object we are referring to and the attribute name for the value.
 Let’s consider our “users” table, used to store information about the users of our application.\\
 
 \begin{minipage}{\linewidth}
 \begin{center}
 \vspace{4mm}
-\includegraphics[width = 0.6\textwidth]{./images/table/users.jpg} 
+\includegraphics[width = 0.6\textwidth]{./images/table/users} 
 \vspace{2mm}
-\captionof{figure}{Users table}
+%\captionof{figure}{Users table}
 \label{fig:tableUsers}
 \end{center}
 \vspace{3mm}
 \end{minipage}
-In key-value database we use keys to retrieve value of our objects. To define the three main components of the key (prefix, identifiers and suffix), we extract those information from the entity. So, we use the entity name (users) to define the prefix, the id (called user\_id) as the identifiers of the key and the suffix is specified by its related attribute. Our schema can be represented by a group of key-value pair specified as follows:\\
+In the key-value database, we use keys to retrieve the values of our objects. To define the three main components of the key (prefix, identifiers, and suffix), we extract that information from the entity. So, we use the entity name (users) to define the prefix, the id (called user\_id) as the identifiers of the key and the suffix is specified by its related attribute. Our schema can be represented by a group of key-value pair specified as follows:\\
 \begin{center}
 	\textbf{user:\$user\_id:\$attribute\_name = \$value}
 \end{center}
 \vspace{5mm}
 The table “users” becomes:
-\vspace{2mm} \\
-Users:1:Username = “Geghi”\\
-Users:1:Password =  “Geghi”\\
-Users:1:degree = “3”\\
-Users:1:Admin = “1”\\
-Users:2:Username = “alice”\\
-Users:2:Password = “alice”\\
-Users:2:degree = “3”\\
-Users:2:Admin = “0”\\
-Users:4:Username = “stefano”\\
-Users:4:Password = “stefano”\\
-Users:4:degree = “3”\\
-Users:4:Admin = “0”\\
-Users:6:Username = “marco”\\
-Users:6:Password = “marco”\\
-Users:6:degree = “3”\\
-Users:6:Admin = “0”\\
-\vspace{3mm} \\
-Relations among entities are respresented in RDBMS with foreign keys. We used a similar approach in translating relational database into key-value schema. The foreign key becomes an addictional identifier in the key for the pair.\\
-For that example, we focus on the tale “subject\_comments” that contains the comment of the user about subject. Among the others, we store in that table informations regard the user that made the comment (using his id) and the subject of the comment (using the id of that subject).\\
+\begin{verbatim}
+Users:1:Username = “Geghi”
+Users:1:Password =  “Geghi”
+Users:1:degree = “3”
+Users:1:Admin = “1”
+Users:2:Username = “alice”
+Users:2:Password = “alice”
+Users:2:degree = “3”
+Users:2:Admin = “0”
+Users:4:Username = “stefano”
+Users:4:Password = “stefano”
+Users:4:degree = “3”
+Users:4:Admin = “0”
+Users:6:Username = “marco”
+Users:6:Password = “marco”
+Users:6:degree = “3”
+Users:6:Admin = “0”
+\end{verbatim}
+\vspace{2mm} 
+Relations among entities are represented in RDBMS with foreign keys. We used a similar approach in translating the relational database into the key-value schema. The foreign key becomes an additional identifier in the key for the pair.\\
+For that example, we focus on the tale “subject\_comments” that contains the comments of the users about the subjects. Among the others, we store in that table information regarding the user that made a comment (using his id) and the subject of the comment (using the id of that subject).\\
 \begin{minipage}{\linewidth}
 \begin{center}
 \vspace{4mm}
-\includegraphics[width = 1\textwidth]{./images/table/subject_comments.jpg} 
+\includegraphics[width = 1\textwidth]{./images/table/subject_comments} 
 \vspace{2mm}
 \captionof{figure}{Subject comments table}
 \label{fig:subjectCommTable}
@@ -339,30 +338,30 @@ For that example, we focus on the tale “subject\_comments” that contains the
 \vspace{3mm}
 \end{minipage}
 We can see the userId, foreign key related to the user who made the comment, and subjectID, foreign key of the subject.\\
-To represent that relation, the identifiers of the key becomes the id of the comment (subject\_comment\_id) the user id (user\_id) and the subject id (subject\_id).\\ The prefix is again the name of the entity and the suffix is the name of the fields. The table is represented by a group of key-value pair specified as follow:
+To represent that relation, the identifiers of the key becomes the id of the comment (subject\_comment\_id) the user id (user\_id) and the subject id (subject\_id).\\ The prefix is again the name of the entity and the suffix is the name of the fields. The table is represented by a group of key-value pairs specified as follow:
 \begin{center}
 \textbf{subject\_comments:\$subject\_comment\_id:\$user\_id:\$subject\_id:\$attribute\_name = \$value}
 \end{center}
 \vspace{5mm}
-The table “subject\_comments” become:
-\vspace{2mm} \\
-Subject\_comments:1:1:1:text = “Spiega bene ma va troppo veloce a mio parere”\\
-Subject\_comments:1:1:1:date = “2019-10-09 15:25:57”\\
-Subject\_comments:2:1:4:text = “L’esame è molto difficile ma le spiegazioni sono  … “\\
-Subject\_comments:2:1:4:date = “2019-10-09 15:27:13”\\
-Subject\_comments:3:1:10:text = “Seguire le lezioni per questo corso è molto consigliato”\\
-Subject\_comments:3:1:10:date = “2019-10-23 21:21:30”\\
-\vspace{2mm} \\
-LevelDB saves the key-value pairs in a file, to initializate that file it is necessary to istantiate the class DB, Option and File, that will provide the tool to works with this architecture. That task must be computed only the first time, so we put the “init.txt” file into the folder project. At every start, the application will check that file, but only the first time we run the code it will istantiate all the buckets; after that initialization, it will update the file writing “true” on it.\\
-Here is the snippet of the code used in our application to create, initializate and populate the buckets with some basic informations.
+The table “subject\_comments” becomes:
+\begin{verbatim}
+Subject_comments:1:1:1:text = “Spiega bene ma va troppo veloce a mio parere”
+Subject_comments:1:1:1:date = “2019-10-09 15:25:57”
+Subject_comments:2:1:4:text = “L’esame è molto difficile ma le spiegazioni sono  … “
+Subject_comments:2:1:4:date = “2019-10-09 15:27:13”
+Subject_comments:3:1:10:text = “Seguire le lezioni per questo corso è molto consigliato”
+Subject_comments:3:1:10:date = “2019-10-23 21:21:30”
+\end{verbatim}
+LevelDB saves the key-value pairs in a file. To initialize that file it is necessary to instantiate the class DB, Option and File, which will provide the tools to work with this architecture. That task must be computed only the first time, so we put the “init.txt” file into the folder project. At every start, the application will check that file, but only the first time we run the code it will instantiate all the buckets; after that initialization, it will update the file writing “true” on it.\\
+Here is the snippet of the code used in our application to create, initialize and populate the buckets with some basic information:
 \vspace{3mm}
 \input{./java_code/leveldb_init.tex}
 \vspace{5mm}
-In order to convert the “teaching” table, representing an N-M relation in RDBMS, to a key-value schema, we introduced a new atribute, changing a bit the structure of the table. Thanks to that table we can map the relation among subjects and professors who teach them.\\
+In order to convert the “teaching” table, representing an N-M relation in RDBMS, to a key-value schema, we introduced a new attribute, changing a bit the structure of the table. Thanks to that table we can map the relation among subjects and professors who teach them.\\
 \begin{minipage}{\linewidth}
 \begin{center}
 \vspace{4mm}
-\includegraphics[width = 0.4\textwidth]{./images/table/teaching.jpg} 
+\includegraphics[width = 0.4\textwidth]{./images/table/teaching} 
 \vspace{2mm}
 \captionof{figure}{Teaching table}
 \label{fig:teachingTable}
