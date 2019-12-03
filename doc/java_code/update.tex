@@ -1,28 +1,37 @@
 % ----- android wearable module -----
 \begin{lstlisting}[language=Java,  basicstyle=\footnotesize]
-public boolean updateCommentSubject(int subjectCommentId, String text, int userId) 
+public boolean updateCommentSubject(int subjectCommentId, String text, int userId) {
+	System.out.println("Updating a subject comment");
 	boolean updated = false;
 	Date date = new Date();
 
 	try {
 		entityManager = factory.createEntityManager();
-		SubjectComment subjectComment = entityManager.find(SubjectComment.class,
-								   subjectCommentId);
+		SubjectComment subjectComment = entityManager.find
+					(SubjectComment.class, subjectCommentId);
 
-		// if the user is the owner of that comment.
+		// if the user is the owner.
 		if (subjectComment.getStud().getId() == userId) {
 			entityManager.getTransaction().begin();
 			subjectComment.setText(text);
-			subjectComment.setDate(date.toString());
+			subjectComment.setDate(date);
 			entityManager.getTransaction().commit();
+			System.out.println("subject comment updated");
 			updated = true;
 
-		} else { // if the user is not the owner of that comment --> false.
+		} else { // if user is not owner --> error
+			System.err.println("You are not the owner of that comment,
+					 please select another comment");
 			entityManager.close();
 			return updated;
 		}
-	} 
-        ...
+	} catch (Exception ex) {
+		ex.printStackTrace();
+		System.err.println("A problem occurred in updating a subject comment!");
+
+	} finally {
+		entityManager.close();
+	}
 	return updated;
 }
 \end{lstlisting}
