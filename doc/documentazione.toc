@@ -28,5 +28,5 @@
 \contentsline {subsection}{\numberline {4.6}Delete}{14}% 
 \contentsline {subsection}{\numberline {4.7}GUI}{15}% 
 \contentsline {section}{\numberline {5}Level DB}{16}% 
-\contentsline {section}{\numberline {6}User Manual}{20}% 
-\contentsline {subsection}{\numberline {6.1}Admin Manual}{24}% 
+\contentsline {section}{\numberline {6}User Manual}{18}% 
+\contentsline {subsection}{\numberline {6.1}Admin Manual}{22}% 
