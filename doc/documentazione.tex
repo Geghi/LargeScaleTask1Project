@@ -67,7 +67,7 @@ There is no form to register into the application, it is assumed that users are 
 \subsection{Requirements}
 
 
-\subsubsection{Functional requirement}
+\subsubsection{Functional requirements}
 The system has to allow the guest to carry out basic functions such as:
 \begin{itemize}
 \item To select a course/professor from the list and view information and comments.
@@ -103,7 +103,7 @@ The system has to allow the administrator to carry out basic functions such as:
 \clearpage
 
 % ----- USE CASES -----
-\subsection{Use case}
+\subsection{Use cases}
 
 \textbf{Actors}
 \begin{itemize}
@@ -144,7 +144,7 @@ Delete a professor/subject & Delete P/S & Admin & The user selects the professor
 \clearpage
 
 
-\subsection{Class diagram}
+\subsection{Analysis class diagram}
 This diagram represent the main entities of the application and the relations between them.
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -152,7 +152,7 @@ This diagram represent the main entities of the application and the relations be
 \includegraphics[width = 0.7\textwidth]{./images/diagrams/AnalysisUML.png} 
 \vspace{2mm}
 \captionof{figure}{UML analysis diagram}
-\label{fig:useCases}
+\label{fig:analisys_diagram}
 \end{center}
 \end{minipage}
 
@@ -197,7 +197,19 @@ The application is developped over a relational-database, using the MySql platfo
 
 \vspace{19mm}
 
+\subsection{Design class diagram}
+In this section, the class diagram developed in the design phase is presented. \\
+To be noticed that we have planned to derive the Professor class and the Student class from an abstract Person class. Person groups together the attributes common to the other two classes, while the specific properties will be declared in the two subclasses. In this way, we try to arrive at a more modular code. We have the same design for the Comment class: it will be developed in two subclasses, one for comments to professors (ProfessorComment) and one for comments to subjects (SubjectComment).
 
+\begin{minipage}{\linewidth}
+\begin{center}
+\vspace{1mm}
+\includegraphics[width=155mm]{./images/diagrams/DesignUml.png} 
+\vspace{2mm}
+\captionof{figure}{Design class diagram}
+\label{fig:design_uml}
+\end{center}
+\end{minipage}
 
 \clearpage
 % ----- IMPLEMENTATION -----
