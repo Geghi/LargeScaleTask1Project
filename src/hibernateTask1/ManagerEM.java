@@ -506,7 +506,7 @@ public class ManagerEM {
 			subject.setInfo(info);
 			entityManager.getTransaction().commit();
 			
-			if(!profIdStr.isBlank()) {
+			if(!profIdStr.isEmpty()) {
 				String[] professorsId = profIdStr.split("," , 5);
 				while(subject.getProfessor().size() > 0){
 					Professor prof = subject.getProfessor().iterator().next();

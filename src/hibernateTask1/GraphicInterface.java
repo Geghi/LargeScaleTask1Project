@@ -416,7 +416,7 @@ public class GraphicInterface extends Application {
     private void adminEditAction() {
     	
     	if(student != null && student.getAdmin()) {
-            if(name.getText().isBlank() || surnameAndCredits.getText().isBlank()) {
+            if(name.getText().isEmpty() || surnameAndCredits.getText().isEmpty()) {
                 System.err.println("Insert name and surname(for professor) or credits(for subject)");
                 return;
             }
@@ -443,7 +443,7 @@ public class GraphicInterface extends Application {
                 int professorId = 0;
                 int credits = 0;
                 try{
-                    if(!surnameAndCredits.getText().isBlank())
+                    if(!surnameAndCredits.getText().isEmpty())
                         credits = Integer.valueOf(surnameAndCredits.getText());
                 } catch(NumberFormatException e) {
                     System.err.println("Invalid input in numeric fields");
@@ -502,7 +502,7 @@ public class GraphicInterface extends Application {
     	int degreeId;
     	
         if("Subjects".equals((String)choosePS.getValue())){
-            if(name.getText().isBlank() || surnameAndCredits.getText().isBlank() || profId.getText().isBlank()) {
+            if(name.getText().isEmpty() || surnameAndCredits.getText().isEmpty() || profId.getText().isEmpty()) {
                 System.err.println("Insert name, credits, info(optional) and the id of a professor for the new subject.");
                 return;
             }
@@ -528,7 +528,7 @@ public class GraphicInterface extends Application {
             }else 
                 System.err.println("Select a Degree program");
         }else{
-            if(name.getText().isBlank() || surnameAndCredits.getText().isBlank()) {
+            if(name.getText().isEmpty() || surnameAndCredits.getText().isEmpty()) {
                 System.err.println("Insert name, surname and info(optional) for the new professor.");
                 return;
             }
