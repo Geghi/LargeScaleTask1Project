@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Creato il: Nov 06, 2019 alle 15:34
+-- Creato il: Dic 11, 2019 alle 12:31
 -- Versione del server: 10.4.8-MariaDB
 -- Versione PHP: 7.3.10
 
@@ -21,7 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `studentsratings`
 --
-CREATE DATABASE IF NOT EXISTS `studentsratings` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+DROP DATABASE IF EXISTS `studentsratings`;
+CREATE DATABASE `studentsratings` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `studentsratings`;
 
 -- --------------------------------------------------------
@@ -95,13 +96,16 @@ CREATE TABLE `prof_comments` (
 
 INSERT INTO `prof_comments` (`id`, `date`, `text`, `profId`, `userId`) VALUES
 (1, '2019-10-09 13:44:41', 'Il professore non è molto disponibile', 4, 1),
-(11, '2019-10-24 08:48:42', '', 5, 2),
-(16, '2019-10-24 09:00:43', '', 5, 2),
-(18, '2019-10-24 09:05:41', 'geghi', 5, 1),
-(19, '2019-10-24 09:05:42', 'geghi', 5, 1),
-(20, '2019-10-24 09:05:52', 'Leave a comment here...', 5, 2),
-(26, '2019-10-24 12:47:04', 'Leave a comment here...', 5, 1),
-(34, '2019-10-24 14:47:05', 'provo un testo lungo e vedo cosa succede\nprovo un testo lungo e vedo cosa succede', 5, 1);
+(2, '2019-12-01 12:36:03', 'Molto interessante ma spiegazioni veloci', 2, 6),
+(3, '2019-11-23 18:11:45', 'I really like his lessons', 4, 6),
+(4, '2019-12-05 17:31:29', 'He\'s a bit slow in the talking', 4, 2),
+(5, '2019-12-05 21:25:09', 'In my opinion, he\'s one of the best professors of the school', 5, 4),
+(6, '2019-11-19 20:58:17', 'I don\'t know if I really like him or really hate him', 5, 2),
+(7, '2019-12-10 12:14:20', 'Severo ma giusto', 6, 1),
+(8, '2019-12-01 08:46:12', 'He\'s ok', 5, 1),
+(9, '2019-11-19 14:34:41', 'He\'s pretty good', 5, 7),
+(10, '2019-12-11 17:36:07', 'Too serious', 6, 4),
+(11, '2019-11-30 11:04:28', 'Spiega bene ma va troppo veloce a mio parere', 2, 4);
 
 -- --------------------------------------------------------
 
@@ -152,18 +156,15 @@ CREATE TABLE `subject_comments` (
 --
 
 INSERT INTO `subject_comments` (`id`, `date`, `text`, `userId`, `subjectId`) VALUES
-(1, '2019-10-09 13:25:57', 'Spiega bene ma va troppo veloce a mio parere', 1, 1),
+(1, '2019-10-09 13:25:57', 'Spiegata bene a lezione', 1, 1),
 (2, '2019-10-09 13:27:13', 'L\'esame è molto difficile ma le spiegazioni sono molto precise. Da migliorare forse la preparazione in laboratiori.', 1, 4),
-(3, '2019-10-23 19:21:30', 'Leave a comment here...xdddd', 1, 10),
-(4, '2019-10-23 19:21:44', 'Leave a comment here...xdddd', 1, 10),
-(5, '2019-10-23 19:29:41', 'Leave a comment here...', 1, 10),
-(7, '2019-10-24 09:14:51', 'geghi		', 1, 10),
-(8, '2019-10-24 09:14:54', 'geghi', 1, 10),
-(12, '2019-10-24 09:20:40', '', 6, 10),
-(13, '2019-10-24 09:31:01', 'Leave a comment here...', 2, 10),
-(14, '2019-10-24 09:35:04', '', 2, 10),
-(15, '2019-10-24 09:35:04', '', 2, 10),
-(16, '2019-10-25 10:40:58', 'ciao', 2, 10);
+(3, '2019-11-28 10:50:46', 'Fornisce basi adeguate per i corsi successivi', 2, 2),
+(4, '2019-11-28 10:46:46', 'Non molto chiara la parte sui puntatori', 6, 2),
+(5, '2019-12-02 10:12:41', 'Very difficult examination', 6, 4),
+(6, '2019-12-06 10:50:13', 'Interesting subject', 2, 10),
+(7, '2019-11-28 18:07:49', 'I don\'t like it', 1, 10),
+(8, '2019-11-08 17:55:32', 'wow, amazing', 4, 10),
+(9, '2019-11-28 11:02:40', 'It\'s good', 6, 10);
 
 -- --------------------------------------------------------
 
@@ -214,7 +215,7 @@ INSERT INTO `users` (`id`, `admin`, `password`, `username`, `degreeId`) VALUES
 (2, b'0', 'alice', 'alice', 3),
 (4, b'0', 'stefano', 'stefano', 3),
 (6, b'0', 'marco', 'marco', 3),
-(8, b'0', 'mattew', 'mattew', 6);
+(7, b'0', 'jack', 'jack', 6);
 
 --
 -- Indici per le tabelle scaricate
@@ -291,7 +292,7 @@ ALTER TABLE `professors`
 -- AUTO_INCREMENT per la tabella `prof_comments`
 --
 ALTER TABLE `prof_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT per la tabella `subjects`
